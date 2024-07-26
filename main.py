@@ -5,6 +5,19 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+import joblib
+
+# Define emotion labels (modify as needed)
+emotion_map = {
+    '01': 'neutral',
+    '02': 'calm',
+    '03': 'happy',
+    '04': 'sad',
+    '05': 'angry',
+    '06': 'fearful',
+    '07': 'disgust',
+    '08': 'surprised'
+}
 
 # Define paths
 data_dir = 'dataset'
@@ -25,7 +38,7 @@ for subdir, _, files in os.walk(data_dir):
     for file in files:
         if file.endswith('.wav'):
             file_path = os.path.join(subdir, file)
-            class_label = os.path.basename(subdir)
+            class_label = emotion_map[os.path.basename(subdir)]  # Assuming folder names match emotion labels
             data = extract_features(file_path)
             features.append(data)
             labels.append(class_label)
