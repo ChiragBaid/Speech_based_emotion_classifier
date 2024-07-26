@@ -2,37 +2,47 @@ import os
 import numpy as np
 import librosa
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 import joblib
 
 def extract_features(file_path):
-    audio, sample_rate = librosa.load(file_path, res_type='kaiser_fast')
-    mfccs = librosa.feature.mfcc(y=audio, sr=sample_rate, n_mfcc=40)
-    mfccs_scaled = np.mean(mfccs.T, axis=0)
-    return mfccs_scaled
+    try:
+        audio, sample_rate = librosa.load(file_path, res_type='kaiser_fast')
+        mfccs = librosa.feature.mfcc(y=audio, sr=sample_rate, n_mfcc=40)
+        mfccs_scaled = np.mean(mfccs.T, axis=0)
+        return mfccs_scaled
+    except Exception as e:
+        print(f"Error encountered while parsing file: {file_path}")
+        print(e)
+        return None
 
-def predict_emotion(file_path, label_encoder=None):
-    new_features = extract_features(file_path)
-    predicted_emotion = model.predict(np.array([new_features]))
-
-    if label_encoder:
-        emotion = label_encoder.inverse_transform(predicted_emotion)[0]
+def predict_emotion(file_path, model, emotion_map):
+    features = extract_features(file_path)
+    if features is not None:
+        features = features.reshape(1, -1)
+        prediction = model.predict(features)[0]
+        predicted_emotion = emotion_map.get(str(prediction), 'unknown')
+        return predicted_emotion
     else:
-        emotion = predicted_emotion  # Assuming category labels are numeric
-    return emotion
+        return "Error in feature extraction"
 
-# Load the saved model and potentially the label encoder (if saved)
+# Define emotion labels
+emotion_map = {
+    '01': 'neutral',
+    '02': 'calm',
+    '03': 'happy',
+    '04': 'sad',
+    '05': 'angry',
+    '06': 'fearful',
+    '07': 'disgust',
+    '08': 'surprised'
+}
+
+# Load the saved model
 model = joblib.load('audio_emotion_classifier_model.pkl')
 
-try:
-    label_encoder = joblib.load('label_encoder.pkl')
-except FileNotFoundError:
-    print("Label encoder not found. Assuming category labels are numeric.")
-    label_encoder = None  # Or handle missing encoder
-
 # Example usage
-new_audio_path = 'female-laughing-156880.mp3'
-predicted_emotion = predict_emotion(new_audio_path, label_encoder)
+new_audio_path = 'crying-male-103153.mp3'
+predicted_emotion = predict_emotion(new_audio_path, model, emotion_map)
 print(f"Predicted Emotion: {predicted_emotion}")
