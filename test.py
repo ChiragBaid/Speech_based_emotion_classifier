@@ -27,22 +27,19 @@ def predict_emotion(file_path, model, emotion_map):
     else:
         return "Error in feature extraction"
 
-# Define emotion labels
 emotion_map = {
-    '01': 'neutral',
-    '02': 'calm',
-    '03': 'happy',
-    '04': 'sad',
-    '05': 'angry',
-    '06': 'fearful',
-    '07': 'disgust',
-    '08': 'surprised'
+    '1' : 'neutral',
+    '2' : 'calm',
+    '3' : 'happy',
+    '4' : 'sad',
+    '5' : 'angry',
+    '6' : 'fearful',
+    '7' : 'disgust',
+    '8' : 'surprised'
 }
 
-# Load the saved model
 model = joblib.load('audio_emotion_classifier_model.pkl')
 
-# Example usage
-new_audio_path = 'crying-male-103153.mp3'
+new_audio_path = 'chuckle-104108.mp3'
 predicted_emotion = predict_emotion(new_audio_path, model, emotion_map)
 print(f"Predicted Emotion: {predicted_emotion}")
