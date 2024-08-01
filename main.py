@@ -9,14 +9,14 @@ import joblib
 
 # Define emotion labels (modify as needed)
 emotion_map = {
-    '01': 'neutral',
-    '02': 'calm',
-    '03': 'happy',
-    '04': 'sad',
-    '05': 'angry',
-    '06': 'fearful',
-    '07': 'disgust',
-    '08': 'surprised'
+    '1': 'neutral',
+    '2': 'calm',
+    '3': 'happy',
+    '4': 'sad',
+    '5': 'angry',
+    '6': 'fearful',
+    '7': 'disgust',
+    '8': 'surprised'
 }
 
 # Define paths
